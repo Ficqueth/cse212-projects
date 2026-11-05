@@ -8,27 +8,51 @@ public class CustomerService {
         // var cs = new CustomerService(10);
         // Console.WriteLine(cs);
 
-        // Test Cases
+                // Test Cases
 
         // Test 1
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: make a queue with a bad size (0) and check it defaults to 10
+        // Expected Result: max_size shows 10
         Console.WriteLine("Test 1");
-
-        // Defect(s) Found: 
+        var cs = new CustomerService(0);
+        Console.WriteLine(cs);
+        // Defect(s) Found: none, the constructor already handled this
 
         Console.WriteLine("=================");
 
         // Test 2
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: add one customer and then serve them
+        // Expected Result: it displays the customer I typed in
         Console.WriteLine("Test 2");
-
-        // Defect(s) Found: 
+        cs = new CustomerService(4);
+        cs.AddNewCustomer();
+        cs.ServeCustomer();
+        // Defect(s) Found: ServeCustomer deleted the customer first and then tried
+        // to read it, so it crashed. Had to flip the order.
 
         Console.WriteLine("=================");
 
-        // Add more Test Cases As Needed Below
+        // Test 3
+        // Scenario: queue of size 2, try adding 3 customers
+        // Expected Result: third one gets an error message
+        Console.WriteLine("Test 3");
+        cs = new CustomerService(2);
+        cs.AddNewCustomer();
+        cs.AddNewCustomer();
+        cs.AddNewCustomer();
+        Console.WriteLine(cs);
+        // Defect(s) Found: the full check used > instead of >=, so it let in one
+        // customer too many
+
+        Console.WriteLine("=================");
+
+        // Test 4
+        // Scenario: serve from an empty queue
+        // Expected Result: error message instead of a crash
+        Console.WriteLine("Test 4");
+        cs = new CustomerService(2);
+        cs.ServeCustomer();
+        // Defect(s) Found: no empty check at all, it just crashed
     }
 
     private readonly List<Customer> _queue = new();
@@ -67,7 +91,7 @@ public class CustomerService {
     /// </summary>
     private void AddNewCustomer() {
         // Verify there is room in the service queue
-        if (_queue.Count > _maxSize) {
+        if (_queue.Count >= _maxSize) {
             Console.WriteLine("Maximum Number of Customers in Queue.");
             return;
         }
@@ -88,8 +112,13 @@ public class CustomerService {
     /// Dequeue the next customer and display the information.
     /// </summary>
     private void ServeCustomer() {
-        _queue.RemoveAt(0);
+        if (_queue.Count == 0) {
+            Console.WriteLine("No customers in the queue.");
+            return;
+        }
+
         var customer = _queue[0];
+        _queue.RemoveAt(0);
         Console.WriteLine(customer);
     }
 
