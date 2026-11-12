@@ -28,6 +28,13 @@
     /// </summary>
     /// <param name="numbers">array of integers</param>
     private static void DisplaySumPairs(int[] numbers) {
-        // TODO Problem 2 - This should print pairs of numbers in the given array
+        // check for the partner (10 - n) before adding n to the set,
+        // that way each pair only prints once
+        var seen = new HashSet<int>();
+        foreach (var n in numbers) {
+            if (seen.Contains(10 - n))
+                Console.WriteLine($"{n} {10 - n}");
+            seen.Add(n);
+        }
     }
 }
